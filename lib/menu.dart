@@ -5,7 +5,7 @@ class MyHomePage extends StatelessWidget {
   final String name = 'Daffa Desra Hastiar';
   final String className = 'PBP C';
   final List<ItemHomepage> items = [
-    ItemHomepage("Lihat Produk", Icons.shopping_cart),
+    ItemHomepage("Lihat Daftar Produk", Icons.shopping_cart),
     ItemHomepage("Tambah Produk", Icons.add),
     ItemHomepage("Logout", Icons.logout),
   ];
@@ -94,10 +94,8 @@ class MyHomePage extends StatelessWidget {
 }
 class InfoCard extends StatelessWidget {
   // Kartu informasi yang menampilkan title dan content.
-
   final String title;  // Judul kartu.
   final String content;  // Isi kartu.
-
   const InfoCard({super.key, required this.title, required this.content});
 
   @override
@@ -127,12 +125,16 @@ class InfoCard extends StatelessWidget {
     );
   }
 }
+class ItemHomepage {
+  final String name;
+  final IconData icon;
+
+  ItemHomepage(this.name, this.icon);
+}
 
 class ItemCard extends StatelessWidget {
   // Menampilkan kartu dengan ikon dan nama.
-
   final ItemHomepage item;
-
   const ItemCard(this.item, {super.key});
 
   @override
@@ -180,12 +182,4 @@ class ItemCard extends StatelessWidget {
     );
   }
 
-}
-
-
-class ItemHomepage {
-  final String name;
-  final IconData icon;
-
-  ItemHomepage(this.name, this.icon);
 }
