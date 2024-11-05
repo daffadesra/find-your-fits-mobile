@@ -1,17 +1,9 @@
-# find_your_fits_mobile
+# README
+Ini adalah repositori untuk tugas programming Flutter mata kuliah PBP 2024/2025 milik Daffa Desra Hastiar (2306165490) dari kelas PBP C.
 
-A new Flutter project.
-
-## Getting Started
-
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
-# find-your-fits-mobile
+# TUGAS 7
+## 1. Jelaskan apa yang dimaksud dengan  _stateless widget dan stateful widget_, dan jelaskan perbedaan dari keduanya.
+## 2. Sebutkan  _widget_  apa saja yang kamu gunakan pada proyek ini dan jelaskan fungsinya.
+## 3. Apa fungsi dari  `setState()`? Jelaskan variabel apa saja yang dapat terdampak dengan fungsi tersebut.
+## 4. Jelaskan perbedaan antara  `const`  dengan  `final`.
+## 5. Jelaskan bagaimana cara kamu mengimplementasikan  _checklist-checklist_  di atas.
