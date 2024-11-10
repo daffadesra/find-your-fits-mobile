@@ -272,3 +272,204 @@ InkWell(
 Isi dari InkWell adalah sebagai berikut:
 - `onTap`: Fungsi yang akan dijalankan ketika InkWell ditekan. Ketika ditekan, akan menampilkan pesan SnackBar yang berisi nama dari `item`.
 - `child`: Widget yang berisi sebuah Container yang berisi sebuah Column yang berisi sebuah Icon dan sebuah Text.
+
+# TUGAS 8
+
+## 1. Apa kegunaan const di Flutter? Jelaskan apa keuntungan ketika menggunakan const pada kode Flutter. Kapan sebaiknya kita menggunakan const, dan kapan sebaiknya tidak digunakan?
+
+`const` di Flutter digunakan untuk mendeklarasikan variabel yang nilainya bersifat konstan dan diketahui pada saat kompilasi (compile-time constant).
+
+Keuntungan menggunakan `const`:
+- Meningkatkan performa aplikasi karena nilai sudah diketahui saat kompilasi
+- Mengoptimalkan memory usage karena widget const hanya dibuat sekali dan digunakan kembali
+- Membantu mencegah perubahan yang tidak diinginkan pada nilai variabel
+- Flutter dapat melakukan optimasi pada widget tree
+
+Kapan menggunakan `const`:
+- Untuk nilai yang tidak akan berubah dan diketahui saat kompilasi
+- Pada widget yang tidak memiliki state dan propertinya tidak berubah
+- Pada nilai literal seperti string, number, atau list yang tetap
+- Pada constructor widget yang semua propertinya bersifat final
+
+Kapan tidak menggunakan `const`:
+- Pada nilai yang ditentukan saat runtime
+- Pada widget yang memiliki state atau properti yang berubah
+- Pada objek yang bergantung pada waktu atau input pengguna
+- Ketika menggunakan data yang diambil dari API atau database
+
+## 2. Jelaskan dan bandingkan penggunaan Column dan Row pada Flutter. Berikan contoh implementasi dari masing-masing layout widget ini!
+
+**Column** dan **Row** adalah widget layout dasar di Flutter untuk mengatur widget child secara vertikal dan horizontal.
+
+**Column**:
+- Mengatur widget secara vertikal (dari atas ke bawah)
+- Menggunakan MainAxisAlignment untuk alignment vertikal
+- Menggunakan CrossAxisAlignment untuk alignment horizontal
+
+Contoh Column:
+```dart
+Column(
+  mainAxisAlignment: MainAxisAlignment.center,
+  crossAxisAlignment: CrossAxisAlignment.start,
+  children: [
+    Text('Item 1'),
+    Text('Item 2'),
+    Text('Item 3'),
+  ],
+)
+```
+
+**Row**:
+- Mengatur widget secara horizontal (dari kiri ke kanan)
+- Menggunakan MainAxisAlignment untuk alignment horizontal
+- Menggunakan CrossAxisAlignment untuk alignment vertikal
+
+Contoh Row:
+```dart
+Row(
+  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+  crossAxisAlignment: CrossAxisAlignment.center,
+  children: [
+    Icon(Icons.star),
+    Text('Rating'),
+    Text('4.5'),
+  ],
+)
+```
+
+## 3. Sebutkan apa saja elemen input yang kamu gunakan pada halaman form yang kamu buat pada tugas kali ini. Apakah terdapat elemen input Flutter lain yang tidak kamu gunakan pada tugas ini? Jelaskan!
+
+Elemen input yang digunakan:
+1. **TextFormField** untuk input teks (nama produk, harga, stok)
+2. **DropdownButtonFormField** untuk memilih kondisi produk dengan opsi yang sudah saya tentukan
+
+Elemen input Flutter lain yang tidak digunakan:
+1. **Checkbox** - untuk input boolean
+2. **Radio** - untuk memilih satu opsi dari beberapa pilihan
+3. **Slider** - untuk memilih nilai dalam rentang tertentu
+4. **Switch** - untuk toggle on/off
+5. **DateTimePicker** - untuk memilih tanggal dan waktu
+6. **ColorPicker** - untuk memilih warna
+7. **ImagePicker** - untuk memilih gambar dari galeri/kamera
+
+## 4. Bagaimana cara kamu mengatur tema (theme) dalam aplikasi Flutter agar aplikasi yang dibuat konsisten? Apakah kamu mengimplementasikan tema pada aplikasi yang kamu buat?
+
+Cara mengatur tema dalam aplikasi Flutter:
+1. Mendefinisikan ThemeData dalam MaterialApp
+2. Menggunakan ColorScheme untuk mengatur skema warna
+3. Menggunakan Theme.of(context) untuk mengakses tema
+
+Implementasi pada aplikasi:
+```dart
+MaterialApp(
+  title: 'Find Your Fits',
+  theme: ThemeData(
+    colorScheme: ColorScheme.fromSwatch(
+      primarySwatch: Colors.blue,
+    ).copyWith(secondary: Colors.blue[400]),
+    useMaterial3: true,
+  ),
+  home: MyHomePage(),
+)
+```
+
+## 5. Bagaimana cara kamu menangani navigasi dalam aplikasi dengan banyak halaman pada Flutter?
+
+Dalam aplikasi ini, navigasi ditangani dengan beberapa cara:
+
+1. Menggunakan **Navigator.pushReplacement()** untuk berpindah halaman:
+```dart
+Navigator.pushReplacement(
+  context,
+  MaterialPageRoute(
+    builder: (context) => ProductEntryFormPage()
+  )
+);
+```
+
+2. Menggunakan **Drawer** untuk navigasi menu samping:
+```dart
+Drawer(
+  child: ListView(
+    children: [
+      ListTile(
+        title: Text('Halaman Utama'),
+        onTap: () {
+          Navigator.pushReplacement(...);
+        },
+      ),
+      // ... menu lainnya
+    ],
+  ),
+)
+```
+
+3. Menggunakan **InkWell** pada card untuk navigasi:
+```dart
+InkWell(
+  onTap: () {
+    if (item.name == "Tambah Produk") {
+      Navigator.pushReplacement(...);
+    }
+  },
+  // ... widget lainnya
+)
+```
+
+Cara lain yang bisa digunakan tapi belum saya implementasikan:
+1. **Named Routes**
+   - Navigasi berbasis nama rute
+   - Didefinisikan di MaterialApp
+   - Cocok untuk aplikasi dengan banyak halaman
+   ```dart
+   // Definisi
+   routes: {'/home': (context) => HomePage()}
+   // Penggunaan
+   Navigator.pushNamed(context, '/home');
+   ```
+
+2. **Navigation Rail**
+   - Menu navigasi vertikal di sisi layar
+   - Cocok untuk tablet/desktop
+   - Hemat ruang dan responsif
+   ```dart
+   NavigationRail(
+     destinations: [
+       NavigationRailDestination(
+         icon: Icon(Icons.home),
+         label: Text('Home'),
+       ),
+       // ... destinations lain
+     ],
+   )
+   ```
+
+3. **Bottom Navigation Bar**
+   - Bar navigasi di bagian bawah
+   - Ideal untuk aplikasi mobile
+   - Mudah dijangkau dengan ibu jari
+   ```dart
+   BottomNavigationBar(
+     items: [
+       BottomNavigationBarItem(
+         icon: Icon(Icons.home),
+         label: 'Home',
+       ),
+       // ... items lain
+     ],
+   )
+   ```
+
+4. **Tab Navigation**
+   - Navigasi berbasis tab di bagian atas
+   - Cocok untuk konten yang berhubungan
+   - Mendukung gesture swipe
+   ```dart
+   TabBar(
+     tabs: [
+       Tab(text: 'Tab 1'),
+       Tab(text: 'Tab 2'),
+       // ... tabs lain
+     ],
+   )
+   ```
