@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:find_your_fits_mobile/widgets/left_drawer.dart';
+import 'package:find_your_fits_mobile/productentry_form.dart';
+
 
 class MyHomePage extends StatelessWidget {
   final String npm = '2306165490';
@@ -30,6 +33,8 @@ class MyHomePage extends StatelessWidget {
         backgroundColor: Theme.of(context).colorScheme.primary,
         centerTitle: true,
       ),
+      // Drawer
+      drawer: const LeftDrawer(),
       // Body halaman dengan padding di sekelilingnya.
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -154,6 +159,13 @@ class ItemCard extends StatelessWidget {
             ..showSnackBar(
                 SnackBar(content: Text("Kamu telah menekan tombol ${item.name}!"))
             );
+          if (item.name == "Tambah Produk") {
+            Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                builder: (context) => const ProductEntryFormPage()
+                ));
+          }
         },
         // Container untuk menyimpan Icon dan Text
         child: Container(
