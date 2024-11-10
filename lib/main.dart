@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:find_your_fits_mobile/menu.dart';
+import 'package:find_your_fits_mobile/screens/menu.dart';
 
 
 void main() {

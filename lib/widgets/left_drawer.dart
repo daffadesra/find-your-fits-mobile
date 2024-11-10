@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:find_your_fits_mobile/menu.dart';
-import 'package:find_your_fits_mobile/productentry_form.dart';
+import 'package:find_your_fits_mobile/screens/menu.dart';
+import 'package:find_your_fits_mobile/screens/productentry_form.dart';
 
 
 class LeftDrawer extends StatelessWidget {
