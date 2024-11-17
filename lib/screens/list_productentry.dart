@@ -12,20 +12,20 @@ class ProductEntryPage extends StatefulWidget {
 }
 
 class _ProductEntryPageState extends State<ProductEntryPage> {
-  Future<List<ProductEntry>> fetchMood(CookieRequest request) async {
+  Future<List<ProductEntry>> fetchProduct(CookieRequest request) async {
     final response = await request.get('http://10.0.2.2:8000/json/');
 
     // Melakukan decode response menjadi bentuk json
     var data = response;
 
-    // Melakukan konversi data json menjadi object MoodEntry
-    List<ProductEntry> listMood = [];
+    // Melakukan konversi data json menjadi object productEntry
+    List<ProductEntry> listProduct = [];
     for (var d in data) {
       if (d != null) {
-        listMood.add(ProductEntry.fromJson(d));
+        listProduct.add(ProductEntry.fromJson(d));
       }
     }
-    return listMood;
+    return listProduct;
   }
 
   @override
@@ -37,7 +37,7 @@ class _ProductEntryPageState extends State<ProductEntryPage> {
       ),
       drawer: const LeftDrawer(),
       body: FutureBuilder(
-        future: fetchMood(request),
+        future: fetchProduct(request),
         builder: (context, AsyncSnapshot snapshot) {
           if (snapshot.data == null) {
             return const Center(child: CircularProgressIndicator());
@@ -46,7 +46,7 @@ class _ProductEntryPageState extends State<ProductEntryPage> {
               return const Column(
                 children: [
                   Text(
-                    'Belum ada data mood pada mental health tracker.',
+                    'Belum ada data produk pada mental health tracker.',
                     style: TextStyle(fontSize: 20, color: Color(0xff59A5D8)),
                   ),
                   SizedBox(height: 8),
@@ -64,18 +64,20 @@ class _ProductEntryPageState extends State<ProductEntryPage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        "${snapshot.data![index].fields.mood}",
+                        "${snapshot.data![index].fields.name}",
                         style: const TextStyle(
                           fontSize: 18.0,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
                       const SizedBox(height: 10),
-                      Text("${snapshot.data![index].fields.feelings}"),
+                      Text("${snapshot.data![index].fields.price}"),
                       const SizedBox(height: 10),
-                      Text("${snapshot.data![index].fields.moodIntensity}"),
+                      Text("${snapshot.data![index].fields.stock}"),
                       const SizedBox(height: 10),
-                      Text("${snapshot.data![index].fields.time}")
+                      Text("${snapshot.data![index].fields.condition}"),
+                      const SizedBox(height: 20),
+                      Text("${snapshot.data![index].fields.description}")
                     ],
                   ),
                 ),
