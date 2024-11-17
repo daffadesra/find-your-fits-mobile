@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:find_your_fits_mobile/screens/menu.dart';
 import 'package:find_your_fits_mobile/screens/productentry_form.dart';
-
+import 'package:find_your_fits_mobile/screens/list_productentry.dart';
 
 class LeftDrawer extends StatelessWidget {
   const LeftDrawer({super.key});
@@ -59,6 +59,19 @@ class LeftDrawer extends StatelessWidget {
                 MaterialPageRoute(
                   builder: (context) => ProductEntryFormPage()
                 )
+              );
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.shopping_bag),
+            title: const Text('Lihat Daftar Produk'),
+            // Bagian redirection ke MoodEntryFormPage
+            onTap: () {
+              Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => ProductEntryPage()
+                  )
               );
             },
           ),

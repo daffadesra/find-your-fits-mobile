@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:find_your_fits_mobile/screens/productentry_form.dart';
+import 'package:find_your_fits_mobile/screens/list_productentry.dart';
 
 class ItemHomepage {
   final String name;
@@ -36,6 +37,12 @@ class ItemCard extends StatelessWidget {
                 MaterialPageRoute(
                     builder: (context) => const ProductEntryFormPage()
                 ));
+          } else if (item.name == "Lihat Mood") {
+            Navigator.push(context,
+              MaterialPageRoute(
+                  builder: (context) => const ProductEntryPage()
+              ),
+            );
           }
         },
         // Container untuk menyimpan Icon dan Text
