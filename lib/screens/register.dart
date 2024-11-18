@@ -114,13 +114,8 @@ class _RegisterPageState extends State<RegisterPage> {
                       String username = _usernameController.text;
                       String password1 = _passwordController.text;
                       String password2 = _confirmPasswordController.text;
-
-                      // Cek kredensial
-                      // TODO: Ganti URL dan jangan lupa tambahkan trailing slash (/) di akhir URL!
-                      // Untuk menyambungkan Android emulator dengan Django pada localhost,
-                      // gunakan URL http://10.0.2.2/
                       final response = await request.postJson(
-                          "http://[APP_URL_KAMU]/auth/register/",
+                          "http://10.0.2.2:8000/auth/register/",
                           jsonEncode({
                             "username": username,
                             "password1": password1,
