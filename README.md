@@ -893,3 +893,304 @@ pada `main.dart`:
   }
   ```
  ## 6. Jelaskan bagaimana cara kamu mengimplementasikan checklist di atas secara step-by-step! (bukan hanya sekadar mengikuti tutorial).
+> **Langkah 1-2 : Autentikasi Django dan Flutter (Login dan Register)**
+> **Langkah 3 : Membuat model `ProductEntry` untuk menyimpan data yang diambil dari server django**
+> **Langkah 4-5 : Penerapan _fetch_ data dari Django untuk ditampilkan di Flutter**
+> **Langkah 6 : Mengirim data baru ke Django dari Flutter**
+> **Langkah 7 : Menambahkan fungsi untuk logout dari aplikasi Flutter**
+
+#### 1. Langkah pertama : Menyiapkan App Autentikasi pada Django untuk Autentikasi Django
+Pada langkah ini, yang saya lakukan adalah:
+1. Membuat django app bernama `authentication` pada proyek django findyourfits saya.
+2. Menambahkan library django-cors-headers pada `INSTALLED_APPS` di `settings.py` (dengan `corsheaders`), pada `MIDDLEWARE` di `settings.py` (dengan `corsheaders.middleware.CorsMiddleware`), dan pada `requirements.txt` (dengan `django-cors-headers`).
+3. Menambahkan variabel untuk mengatur cors pada `settings.py` :
+  ```
+  ...
+  CORS_ALLOW_ALL_ORIGINS = True
+  CORS_ALLOW_CREDENTIALS = True
+  CSRF_COOKIE_SECURE = True
+  SESSION_COOKIE_SECURE = True
+  CSRF_COOKIE_SAMESITE = 'None'
+  SESSION_COOKIE_SAMESITE = 'None'
+  ...
+  ```
+4. Karena saya menggunakan Android Studio, saya menambahkan `10.0.2.2` sebagai `localhost` pada `hosts` file.
+  ```
+  ALLOWED_HOSTS = [..., ..., "10.0.2.2"]
+  ```
+5. Pada `authentication/views.py`, saya membuat fungsi `login` dan `register` untuk autentikasi login dan membuat akun baru dan routingnya pada `authentication/urls.py`.
+  Pada `urls.py`:
+    ```
+    from django.urls import path
+    from authentication.views import login, register
+    app_name = 'authentication'
+
+    urlpatterns = [
+        path('login/', login, name='login'),
+        path('register/', register, name='register'),
+    ]
+    ```
+6. Pada `findyourfits/settings.py`, saya menambahkan `authentication` pada `INSTALLED_APPS` dan menambahkan routingnya pada `findyourfits/urls.py`.
+#### 2. Langkah kedua : Integrasi sistem autentikasi ke dalam aplikasi Flutter
+Pada langkah ini, yang saya lakukan adalah:
+1. Menginstall package flutter berikut:
+    ```
+    flutter pub add provider
+    flutter pub add pbp_django_auth
+    ```
+2. Mengubah `main.dart` untuk menambahkan provider dan cookie request:
+    ```
+    class MyApp extends StatelessWidget {
+      const MyApp({super.key});
+
+      @override
+      Widget build(BuildContext context) {
+        return Provider(
+            create: (_) {
+          CookieRequest request = CookieRequest();
+          return request;
+        },
+        child: MaterialApp(
+            title: 'Find Your Fits',
+            theme: ThemeData(
+              colorScheme: ColorScheme.fromSwatch(
+                primarySwatch: Colors.blue,
+              ).copyWith(secondary: Colors.blue[400]),
+              useMaterial3: true,
+            ),
+            home: MyHomePage(),
+          )
+        );
+      }
+    }
+    ```
+3. Melakukan import package `provider` dan `pbp_django_auth` pada `main.dart` (dan file dart lainnya yang membutuhkan)
+4. Membuat file `login.dart` dan `register.dart` pada direktori `lib/screens` untuk halaman login dan register.
+5. Mengubah child dari `MaterialApp` menjadi `LoginPage()`
+```
+return MaterialApp(
+  title: 'Find Your Fits',
+  theme: ThemeData(...),
+  home: LoginPage(),
+);
+```
+#### 3. Langkah ketiga : Membuat model `ProductEntry` untuk menyimpan data yang diambil dari server Django
+Dalam langkah ini, saya membuat model `ProductEntry` untuk menyimpan data yang diambil dari server django. Caranya adalah:
+1. Melakukan login pada web django `findyourfits` dan membuka endpoint JSON pada `http://127.0.0.1:8000/json/`
+2. Menyalin data JSON tersebut dan membuka situs quicktype.io
+3. Memilih Dart pada `Select Language` dan klik tombol `Generate!`
+4. Meng-copy potongan kode dart yang sudah dibuat oleh quicktype.io dan menempelkannya pada `models/product_entry.dart`
+#### 4. Langkah keempat : Menambahkan dependensi HTTP
+Langkah yang saya lakukan adalah:
+1. Menginstall package flutter berikut:
+    ```
+    flutter pub add http
+    ```
+2. Pada `android/app/src/main/AndroidManifest.xml`, saya menambahkan permission internet:
+    ```
+    <uses-permission android:name="android.permission.INTERNET"/>
+    ```
+#### 5. Langkah kelima : Membuat fungsi untuk fetch data dari server Django
+Dalam langkah ini, yang saya lakukan adalah:
+1. Membuat screen `list_productentry.dart` pada direktori `lib/screens` untuk menampilkan data yang diambil dari server django.
+2. Pada kode `list_productentry.dart`, class _ProductEntryPageState akan memiliki fungsi `fetchProduct` yang berfungsi untuk mengambil data dari server django. 
+    ```
+    class _ProductEntryPageState extends State<ProductEntryPage> {
+      Future<List<ProductEntry>> fetchProduct(CookieRequest request) async {
+        final response = await request.get('http://10.0.2.2:8000/json/');
+
+        // Melakukan decode response menjadi bentuk json
+        var data = response;
+
+        // Melakukan konversi data json menjadi object productEntry
+        List<ProductEntry> listProduct = [];
+        for (var d in data) {
+          if (d != null) {
+            listProduct.add(ProductEntry.fromJson(d));
+          }
+        }
+        return listProduct;
+      }
+    ...
+    ```
+3. Menambahkan tombol untuk redirect ke `list_productentry.dart` pada `left_drawer.dart`.
+    ```
+    ...
+    ListTile(
+      leading: const Icon(Icons.shopping_bag),
+      title: const Text('Lihat Daftar Produk'),
+      // Bagian redirection ke MoodEntryFormPage
+      onTap: () {
+        Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+                builder: (context) => ProductEntryPage()
+            )
+        );
+      },
+    ),
+    ```
+4. Menambahkan routing untuk tombol `Lihat Daftar Produk` pada `menu.dart`.
+    ```
+    } else if (item.name == "Lihat Mood") {
+      Navigator.push(context,
+        MaterialPageRoute(
+            builder: (context) => const ProductEntryPage()
+        ),
+      );
+    }
+    ```
+5. Mengimpor file yang dibutuhkan pada `list_productentry.dart`
+#### 6. Langkah keenam : Integrasi fitur `form` pada Flutter untuk mengirim `ProductEntry` baru dari Flutter ke Webservice Django
+Pada langkah ini, yang saya lakukan adalah:
+1. Membuat fungsi `create_product_flutter` pada `main/views.py` yang terletak pada proyek django `findyourfits`.
+    ```
+    from django.views.decorators.csrf import csrf_exempt
+    import json
+    from django.http import JsonResponse
+    ...
+    @csrf_exempt
+    def create_product_flutter(request):
+        if request.method == 'POST':
+
+            data = json.loads(request.body)
+            new_product = ProductEntry.objects.create(
+                user=request.user,
+                name=data["name"],
+                price=int(data["price"]),
+                stock=int(data["stock"]),
+                condition=data["condition"],
+                description=data["description"]
+            )
+
+            new_product.save()
+
+            return JsonResponse({"status": "success"}, status=200)
+        else:
+            return JsonResponse({"status": "error"}, status=401)
+    ```
+2. Menambahkan routing untuk fungsi `create_product_flutter` pada `urls.py`
+    ```
+    from main.views import create_product_flutter
+    ...
+    urlpatterns = [
+        ...
+        path('create-flutter/', create_product_flutter, name='create_product_flutter'),
+    ]
+    ```
+3. Menghubungkan halaman `product_entry_form.dart` dengan fungsi CookieRequest.
+    ```
+    ...
+    @override
+    Widget build(BuildContext context) {
+        final request = context.watch<CookieRequest>();
+
+        return Scaffold(
+        ...
+    ```
+4. Mengubah `onPressed()` pada `product_entry_form.dart` untuk mengirim data ke server django.
+    ```
+    onPressed: () async {
+      if (_formKey.currentState!.validate()) {
+        // Kirim ke Django dan tunggu respons
+        final response = await request.postJson(
+          "http://10.0.2.2:8000/create-product-flutter/",
+          jsonEncode(<String, String>{
+            'name': _namaProduk,
+            'price': _hargaProduk.toString(),
+            'stock': _stokProduk.toString(),
+            'condition': _kondisiProduk,
+            'description': _deskripsiProduk,
+          }),
+        );
+        if (context.mounted) {
+          if (response['status'] == 'success') {
+            ScaffoldMessenger.of(context)
+                .showSnackBar(const SnackBar(
+              content: Text("Product baru berhasil ditambahkan!"),
+            ));
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => MyHomePage()),
+            );
+          } else {
+            ScaffoldMessenger.of(context)
+                .showSnackBar(const SnackBar(
+              content:
+              Text("Terdapat kesalahan, silakan coba lagi."),
+            ));
+          }
+        }
+      }
+      },
+    ```
+5. Melakukan import file yang dibutuhkan pada `productentry_form.dart`
+#### 7. Langkah ketujuh : Menambahkan fungsi untuk logout dari aplikasi Flutter
+Pada langkah ini, yang saya lakukan adalah:
+1. Membuat fungsi `logout` pada `authentication/views.py` yang terletak pada proyek django `findyourfits`.
+    ```
+    from django.contrib.auth import logout as auth_logout
+    ...
+    @csrf_exempt
+    def logout(request):
+        username = request.user.username
+
+        try:
+            auth_logout(request)
+            return JsonResponse({
+                "username": username,
+                "status": True,
+                "message": "Logout berhasil!"
+            }, status=200)
+        except:
+            return JsonResponse({
+                "status": False,
+                "message": "Logout gagal."
+            }, status=401)
+    ```
+2. Menambahkan routing untuk fungsi `logout` pada `authentication/urls.py`
+    ```
+    from authentication.views import logout
+    ...
+    urlpatterns = [
+        ...
+        path('logout/', logout, name='logout'),
+    ]
+    ```
+3. Pada widget `product_card.dart`, saya menambahkan CookieRequest pada fungsi build 
+    ```
+    @override
+    Widget build(BuildContext context) {
+      final request = context.watch<CookieRequest>();
+      return Material(
+        ...
+      );
+    }
+    ```
+4. Mengubah perintah `onTap(): () {...}` menjadi `onTap(): () async {...}` agar bisa logout secara asinkronus.
+5. Menambahkan potongan kode ke dalam `async {...}` untuk logout.
+    ```
+    else if (item.name == "Logout") {
+      final response = await request.logout(
+          "http://10.0.2.2:8000/auth/logout/");
+      String message = response["message"];
+      if (context.mounted) {
+        if (response['status']) {
+          String uname = response["username"];
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text("$message Sampai jumpa, $uname."),
+          ));
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => const LoginPage()),
+          );
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(message),
+            ),
+          );
+        }
+      }
+    }
+    ```
