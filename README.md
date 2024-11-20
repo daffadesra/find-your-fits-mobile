@@ -896,8 +896,8 @@ pada `main.dart`:
 > **Langkah 1-2 : Autentikasi Django dan Flutter (Login dan Register)**
 > **Langkah 3 : Membuat model `ProductEntry` untuk menyimpan data yang diambil dari server django**
 > **Langkah 4-5 : Penerapan _fetch_ data dari Django untuk ditampilkan di Flutter**
-> **Langkah 6 : Mengirim data baru ke Django dari Flutter**
-> **Langkah 7 : Menambahkan fungsi untuk logout dari aplikasi Flutter**
+> **Langkah 6 dan 7 : Mengirim data baru ke Django dari Flutter**
+> **Langkah 8 : Menambahkan fungsi untuk logout dari aplikasi Flutter**
 
 #### 1. Langkah pertama : Menyiapkan App Autentikasi pada Django untuk Autentikasi Django
 Pada langkah ini, yang saya lakukan adalah:
@@ -1125,7 +1125,79 @@ Pada langkah ini, yang saya lakukan adalah:
       },
     ```
 5. Melakukan import file yang dibutuhkan pada `productentry_form.dart`
-#### 7. Langkah ketujuh : Menambahkan fungsi untuk logout dari aplikasi Flutter
+#### 7. Langkah ketujuh : Menambahkan screen untuk product_page.dart
+Pada langkah ini, saya membuat screen `product_page.dart` pada direktori `lib/screens` untuk menampilkan detail produk.
+Berikut adalah implementasinya:
+1. Membuat fungsi `fetchProduct` pada `product_page.dart` untuk mengambil data dari server django.
+2. Menambahkan routing untuk tombol `Lihat Detail Produk` pada `product_card.dart`.
+Berikut adalah kode pada `product_page.dart`:
+```
+import 'package:flutter/material.dart';
+import 'package:find_your_fits_mobile/models/product_entry.dart';
+
+class ProductPage extends StatelessWidget {
+  final ProductEntry product;
+
+  const ProductPage({super.key, required this.product});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(product.fields.name),
+        backgroundColor: Theme.of(context).colorScheme.primary,
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              product.fields.name,
+              style: const TextStyle(
+                fontSize: 24.0,
+                fontWeight: FontWeight.bold,
+                color: Colors.blue,
+              ),
+            ),
+            const SizedBox(height: 16.0),
+            Text(
+              "Price: Rp ${product.fields.price}",
+              style: const TextStyle(fontSize: 18.0),
+            ),
+            const SizedBox(height: 8.0),
+            Text(
+              "Stock: ${product.fields.stock} pcs",
+              style: const TextStyle(fontSize: 18.0),
+            ),
+            const SizedBox(height: 8.0),
+            Text(
+              "Condition: ${product.fields.condition}",
+              style: const TextStyle(fontSize: 18.0),
+            ),
+            const SizedBox(height: 16.0),
+            Text(
+              "Description:",
+              style: const TextStyle(
+                fontSize: 20.0,
+                fontWeight: FontWeight.bold,
+                color: Colors.blue,
+              ),
+            ),
+            const SizedBox(height: 8.0),
+            Text(
+              product.fields.description,
+              style: const TextStyle(fontSize: 16.0),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+```
+
+#### 8. Langkah kedelapan : Menambahkan fungsi untuk logout dari aplikasi Flutter
 Pada langkah ini, yang saya lakukan adalah:
 1. Membuat fungsi `logout` pada `authentication/views.py` yang terletak pada proyek django `findyourfits`.
     ```
